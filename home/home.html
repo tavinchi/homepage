@@ -9,19 +9,35 @@
     <link rel="icon" href="img/favicon.ico">
 </head>
 <body>
-	<div id="head">
-        
-        <a href="https://www.youtube.com/channel/UCwC6GtnHwiVBt1q5BhGoVJA"><img src="img/youtube.png" alt="ユーチューブ"></a>
-        <a href="https://twitter.com/tavinchi2357"><img src="img/X.png" alt="x(旧ツイッター)"></a>
-        <a href="https://www.instagram.com/tavinchi2357/"><img src="img/insta.png" alt="インスタグラム"></a>
-        <h1>タヴィンチのホームページ</h1>
-		<p>こんにちは、タヴィンチです。ArduinoやESP32で作った作品をアップしたり、おいしかったものをアップしていきます！</p>
-        <div id="head_title">
-            <a href="home.html">ホーム</a>
-            <a href="../sakuhinn/sakuhin.html">作品紹介</a>
-            <a href="../food/food.html">食べ物</a>
-            <a href="../toiawase/toiawase.html">問い合わせ</a>
+	<header class="header">
+        <!-- ヘッダーロゴ -->
+        <div class="logo"><a href="home.html"><img src="img/robot.png" alt="ロゴ"></a></div>
+
+        <!-- ハンバーガーメニュー部分 -->
+        <div class="nav">
+          <div class="musi"><a href="../kensaku/kensaku.html"><img src="img/kensaku.png" alt="kensakuB"></a></div>
+      
+          <!-- ハンバーガーメニューの表示・非表示を切り替えるチェックボックス -->
+          <input id="drawer_input" class="drawer_hidden" type="checkbox">
+      
+          <!-- ハンバーガーアイコン -->
+          
+          <label for="drawer_input" class="drawer_open"><span></span></label>
+          
+          <!-- メニュー -->
+          <nav class="nav_content">
+            <ul class="nav_list">
+              <li class="nav_item"><a href="home.html">ホーム</a></li>
+              <li class="nav_item"><a href="../sakuhinn/sakuhin.html">作品紹介</a></li>
+              <li class="nav_item"><a href="../food/food.html">食べ物</a></li>
+            </ul>
+          </nav>
+     
         </div>
-	</div>
+    </header>
+    <div id="main">
+        <h1>タヴィンチの部屋へようこそ</h1>
+        <h1>Arduino/ESP32で作った作品やおいしかった食べ物をアップしていきます！</h1>
+    </div>
 </body>
 </html>
