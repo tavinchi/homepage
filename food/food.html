@@ -1,10 +1,50 @@
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-	</head>
-	<body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タヴィンチのホームページ</title>
+    <!-- CSSファイルをリンク -->
+    <link rel="stylesheet" href="../home/style.css">
+    <link rel="icon" href="img/favicon.ico">
+</head>
+<body>
+	<header class="header">
+        <!-- ヘッダーロゴ -->
+        <div class="logo"><a href="../home/home.html"><img src="../home/img/robot.png" alt="ロゴ"></a></div>
+		<h1>食べ物</h1>
 
-	</body>
+        <!-- ハンバーガーメニュー部分 -->
+        <div class="nav">
+          <div class="musi"><a href="../kensaku/kensaku.html"><img src="../home/img/kensaku.png" alt="kensakuB"></a></div>
+      
+          <!-- ハンバーガーメニューの表示・非表示を切り替えるチェックボックス -->
+          <input id="drawer_input" class="drawer_hidden" type="checkbox">
+      
+          <!-- ハンバーガーアイコン -->
+          
+          <label for="drawer_input" class="drawer_open"><span></span></label>
+          
+          <!-- メニュー -->
+          <nav class="nav_content">
+            <h1>メニュー</h1>
+            <div id="btn_menu">
+            <button onclick="window.location.href='../home/home.html'">ホーム</button>
+            <button onclick="window.location.href='../sakuhinn/sakuhin.html'">作品紹介</button>
+            <button onclick="window.location.href='food.html'">食べ物</button>
+            </div>
+            <div id="btn_sub">
+                <button onclick="window.location.href='https://forms.gle/c3LrjmZrCP2qbfAH8'">問い合わせ</button>
+                <div class="inst"><a href="https://www.instagram.com/tavinchi2357/"><img src="../home/img/insta.png" alt="インスタ"></a></div>
+                <div class="youtube"><a href="https://www.youtube.com/channel/UCwC6GtnHwiVBt1q5BhGoVJA"><img src="../home/img/youtube.png" alt="ユーチューブ"></a></div>
+                <div class="X"><a href="https://twitter.com/tavinchi2357"><img src="../home/img/X.png" alt="X"></a></div>
+            </div>
+          </nav>
+     
+        </div>
+    </header>
+    <div id="main">
+      
+    </div>
+</body>
 </html>
