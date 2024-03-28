@@ -3,18 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ホームページ</title>
+    <title>数値表示メーター</title>
     <!-- CSSファイルをリンク -->
+	<link rel="stylesheet" href="sakuhin.css">
+	<link rel="icon" href="../home/img/favicon.ico">
 </head>
 <body>
 	<div id="head">
 		<h1>数値表示メーター</h1>
-		<p>ESP32を使って数値表示メーターを作りました。ESP32標準搭載のwifiとIRセンサーを組み合わせて作成。おまけにスプレッドシートで回数を記録できます。</p>
+		<img src="img/ND3.jpg" alt="数値表示メーター">
+		<h2>こんにちは、タヴィンチです。</h2>
 	</div>
-	<h2>作り方</h2>
-	<h3>必要なもの</h3>
-	①ESP32②…
+	<p>今回はESP32を使って数値表示メーターを作りました。ESP32標準搭載のWiFiとIRセンサー（赤外線）を組み合わせて作成しました。おまけにスプレッドシートで日時と回数も記録できます。</p>
+	<div id="mokuzi">
+		<h2>目次</h2>
+		<ol id="mokuzi2">
+			<a href="#first"><li>はじめに</li></a>
+			<a href="#second"><li>準備(必要なもの)</li></a>
+			<a href="#third"><li>回路図</li></a>
+			<a href="#forth"><li>コード</li></a>
+				<ol>
+					<a href="#forth_1"><li>ESP32側(htmlとC)</li></a>
+					<a href="#forth_2"><li>スプレッドシート側(記録)</li></a>
+				</ol>
+			<a href="#fifth"><li>動作確認</li></a>
+			<a href="#six"><li>まとめ</li></a>
+		</ol>
+	</div>
+	<div id="first"><h2>はじめに</h2></div>
+	今まではarduinoで車を作ってライントレースをさせたり、ピアノを作ってカエルの歌を引いてみたりしました。
+	作って動かすのが楽しかったのですが、やっぱりWiFiを使ってデータを送受信したりLINEに画像を送りてー欲が大きくなり、色々調べていくうちにESP32に出会いました。<br>
+	今回はESP32で初めての作品として自転車の回転数を表示させる数値表示メーターを作りました。↓作ったもの
+	<img src="img/ND3.jpg" alt="数値表示メーター">
+	<div id="second"><h2>準備(必要なもの)</h2></div>
+	①ESP32②モバイルバッテリー③IRセンサー④ブレッドボード⑤ジャンパー⑥スマホorタブレットorPC(WiFiが使えるもの)
+	<div id="third"><h2>回路図</h2></div>
+	<div class="kairo"><img src="img/ND_kairo.jpg" alt=""></div>
+	<div id="forth"><h2>コード</h2></div>
+	コードはesp32側のhtml、C言語とデータを記録するスプレッドシート側のGASに分けています。
+	<div id="forth_1"><h2>ESP32側(htmlとC)</h2></div>
+	<pre><code>
+		#include &lt;WiFi.h&gt;
+		#include &lt;WebServer.h&gt;
+		
+		#include &lt;HTTPClient.h&gt;
+		//#define led 12  //テスト
+		
+		const char* ssid = "*****";
+		const char* pwwd = "*****";
+		String host = "GASのデプロイ先";
+		int count = 0;
+		int SW=1;
+		bool flg=false;
+		
+		WebServer server(80);
+		void setup() {
+		  pinMode(5,INPUT);
+		  //シリアルポート設定
+		  Serial.begin(115200);
+		  //pinMode(led, OUTPUT);
+		  //digitalWrite(led, LOW);
+		  WiFi.begin(ssid, pwwd);
+		  while (WiFi.status() != WL_CONNECTED) {
+			delay(300);
+			Serial.print(".");
+		  }
+		  Serial.println("");
+		  Serial.println("WiFi Connected");
+		  Serial.print("IP Address : ");
+		  Serial.println(WiFi.localIP());
+		
+		  server.on("/", handleLedOnOff);
+		  server.onNotFound(handleNotFound);
+		
+		  server.begin();
+		}
+		
+		void loop() {
+		  SW = digitalRead(5);
+		  if (SW == 0 && flg == true) {
+			count++;  // 障害物センサが検知された場合に count を増加させる
+			flg = false;
+		  } else if (SW == 1) {
+			flg = true;
+		  }
+		  server.handleClient();
+		  delay(300);
+		}
+		
+		void handleLedOnOff() {
+		  String html;
+		  html = "&lt;!DOCTYPE html&gt;";
+		  html += "&lt;html lang='ja'&gt;";
+		  html += "&lt;meta charset=&quot;utf-8&quot;&gt;";
+		  html += "&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;";
+		  html += "&lt;head&gt;";
+		  html+="&lt;meta http-equiv='refresh' content='1'&gt;";  // Add this line
+		  html += "&lt;title&gt;数値表示メーター&lt;/title&gt;";
+		
+		  html+="&lt;style&gt;";
+		  html+="h1,h2{";
+		  html+="text-align:center;";
+		  html+="}";
+		  html+=".button-container{";
+		  html+="text-align:center;";
+		  html+="}";
+		  html+="&lt;/style&gt;";
+		
+		  html += "&lt;/head&gt;";
+		  html += "&lt;body&gt;";
+		  html += "&lt;h1&gt;数値表示メーター&lt;/h1&gt;";
+		  html +="&lt;h2 id='cnt'&gt;"+String(count)+"&lt;/h2&gt;";
+		
+		  html += "&lt;div class='button-container'&gt;";
+		  html += "&lt;form action='' method='post'&gt;";
+		  html += "&lt;button type='submit' name='click' value='on'&gt;&lt;big&gt;開始&lt;big&gt;&lt;/button&gt;";
+		  html += "&lt;button type='submit' name='click' value='off'&gt;&lt;big&gt;終了&lt;big&gt;&lt;/button&gt;";
+		  html += "&lt;button type='submit' name='click' value='res'&gt;&lt;big&gt;リセット&lt;big&gt;&lt;/button&gt;";
+		  html += "&lt;/form&gt;";
+		  html += "&lt;/div&gt;";
+		
+		  html += "&lt;/body&gt;";
+		  html += "&lt;/html&gt;";
+		  html += "";
+		  
+		  if (server.method() == HTTP_POST) 
+		  {
+			if (server.arg("click").equals("on")) {
+			  HTTPClient http;
+			  http.begin(host + "?count=" + count + "&SE=start");
+			  http.GET();
+			  //digitalWrite(led, HIGH);
+			}
+			else if (server.arg("click").equals("off")) {
+			  HTTPClient http;
+			  http.begin(host + "?count=" + count + "&SE=end");
+			  http.GET();
+			  //digitalWrite(led, LOW);
+			}
+			else if(server.arg("click").equals("res")){
+			  count=0;
+			}
+		  }
+		  server.send(200, "text/html", html);
+		}
+		
+		void handleNotFound(void) {
+		  server.send(404, "text/plain", "Not Found");
+		}
+			</code></pre>
+			ssid,pwwd,hostを変えて使用してください
+	<div id="forth_2"><h2>スプレッドシート側(GAS)</h2></div>
+	<pre><code>
+		function test() {
+		  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+		  var cell1=sheet.getRange('A1');
+		  var cell2=sheet.getRange('B1');
+		  var cell3=sheet.getRange('C1');
+		  
+		  //テキストの文字を"開始"
+		  cell1.setValue("開始");
+		  //テキストを中央配置
+		  cell1.setHorizontalAlignment("center");
+		  //テキストを太字
+		  cell1.setFontWeight("bold");
+		  //テキストの背景色を薄い赤色
+		  cell1.setBackground("#ffe6e6");
+		
+		  //テキストの文字を"終了"
+		  cell2.setValue("終了");
+		  //テキストを中央配置
+		  cell2.setHorizontalAlignment("center");
+		  //テキストを太字
+		  cell2.setFontWeight("bold");
+		  //テキストの背景色を薄い青色
+		  cell2.setBackground("#cce6ff");
+		
+		  //テキストの文字を"回数"
+		  cell3.setValue("回数");
+		  //テキストを中央配置
+		  cell3.setHorizontalAlignment("center");
+		  //テキストを太字
+		  cell3.setFontWeight("bold");
+		  //テキストの背景色を薄い緑色
+		  cell3.setBackground("#e6ffcc");
+		
+		}
+		
+		function doGet(e) {
+		  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+		  var data = e.parameter.count;
+		  var D_time=new Date();
+		
+		  // 空いている最終行の取得
+		  var lastRow = sheet.getLastRow();
+		
+		  // 空いているセルにデータを書き込む
+		  if(e.parameter.SE=="start"){
+			sheet.getRange(lastRow+1,1).setValue(D_time);
+		  }else if(e.parameter.SE="end"){
+			sheet.getRange(lastRow,2).setValue(D_time);
+			sheet.getRange(lastRow,3).setValue(data);
+		  }
+		  
+		  return ContentService.createTextOutput('success');
+		}
+			</code></pre>
+	<div id="fifth"><h2>動作確認</h2></div>
+	<div class="video">
+		<video width="640" height="360" controls>
+			<source src="img/IMG_8201.mp4" type="video/mp4">
+		</video>
+	</div>
+	正常に動作させることができました。
+	<div id="six"><h2>まとめ</h2></div>
+	今回はESP32初作品として数値表示メーターを作成しました。<br>
+	ESP32側にC(arduino言語)とhtml,cssを組み合わせました。<br>
+	スプレッドシートにデータを保存することができるので外出先からでも確認できます。<br>
+	みなさんもぜひ作ってみてください。
 
-	<p><a href="home.html">戻る</a></p>
+	<p><a href="sakuhin.html">戻る</a></p>
 </body>
 </html>

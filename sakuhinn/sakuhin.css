@@ -1,0 +1,68 @@
+h1{
+	text-align: center;
+	background-color: #e0f3ff;
+}
+img{
+	width: 70%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+body{
+	margin: 2% 5%;
+}
+
+#mokuzi {
+	text-align: center; /* テキストを中央揃えにする */
+	margin:2% 20%;
+	padding: 10px;
+	border: 2px solid black;
+}
+#mokuzi ol {
+	display: inline-block; /* リストを横並びにする */
+	padding-left: 0; /* デフォルトの左の余白を削除 */
+	margin: 0; /* デフォルトのマージンを削除 */
+	text-align: left; /* リスト内のテキストを左揃えにする */
+	padding-left: 0;
+}
+#mokuzi ol li{
+	margin-left:20px;
+
+}
+
+#mokuzi ol a{
+	text-decoration: none;
+}
+
+#mokuzi ol ol {
+	margin-left: 20px; /* 子リストを親リストから少し右にずらす */
+}
+
+.video{
+	text-align: center;
+}
+
+#first,#second,#third,#forth,#forth_1,#forth_2,#fifth,#six{
+	
+	background-color: #e0f3ff;
+}
+
+.kairo img{
+	width: 70%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+pre {
+	background-color: #f4f4f4; /* コードブロックの背景色 */
+	padding: 10px; /* コードブロックの余白 */
+	border-radius: 5px; /* コードブロックの角丸 */
+	overflow-x: auto; /* コードブロックが画面外にはみ出た場合、横スクロールバーを表示 */
+	white-space: pre-wrap; /* コード内の改行や空白を保持 */
+	font-family: 'Courier New', Courier, monospace; /* フォントの指定 */
+}
+code {
+	font-size: 14px; /* コードのフォントサイズ */
+}
