@@ -188,3 +188,13 @@ body {
 	width: 200px; /* 幅を50pxに設定 */
 	height: auto; /* 高さを自動調整 */
 }
+
+.foodim {
+	display: flex;
+	justify-content: center; /* 水平方向に中央配置 */
+	height: 100vh; /* ビューポートの高さいっぱいに設定 */
+}
+.foodim img {
+	width: 200px; /* 幅を50pxに設定 */
+	height: auto; /* 高さを自動調整 */
+}
