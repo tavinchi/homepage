@@ -1,3 +1,4 @@
+
 h1{
 	text-align: center;
 	background-color: #e0f3ff;
@@ -9,7 +10,7 @@ img{
 	margin: 0 auto;
 }
 
-body{
+#main{
 	margin: 2% 5%;
 }
 

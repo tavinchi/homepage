@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スクロールゲーム</title>
+    <!-- CSSファイルをリンク -->
+	<link rel="stylesheet" href="sakuhin.css">
+	<link rel="icon" href="../home/img/favicon.ico">
+</head>
+<body>
+	<div id="head">
+		<h1>スクロールゲーム</h1>
+		<img src="img/IMG_8244.jpg" alt="">
+		<h2>こんにちは、タヴィンチです。</h2>
+	</div>
+	<p>今回はArduino nanoとlcdディスプレイを組み合わせてスクロールゲームを作りました。配線作業が面倒くさいです。（笑）</p>
+	<div id="mokuzi">
+		<h2>目次</h2>
+		<ol id="mokuzi2">
+			<a href="#first"><li>はじめに</li></a>
+			<a href="#second"><li>準備(必要なもの)</li></a>
+			<a href="#third"><li>回路図</li></a>
+			<a href="#forth"><li>コード</li></a>
+			<a href="#fifth"><li>動作確認</li></a>
+			<a href="#six"><li>まとめ</li></a>
+		</ol>
+	</div>
+	<div id="first"><h2>はじめに</h2></div>
+	Arduino nanoとlcdディスプレイを組み合わせてスクロールゲームを作りました。
+	変数の値をランダムで作成したりソフトにこだわって作成しました。<br>
+	簡易的なゲームですが、レベルの調整やカウントなど工夫して作りました。
+	勉強の合間に遊べます（笑）↓作ったもの（全体）
+	<img src="img/IMG_8246.jpg" alt="数値表示メーター">
+	<div id="second"><h2>準備(必要なもの)</h2></div>
+	①Arduino②LCD_ディスプレイ③タクトスイッチ × 2④ブレッドボード × 3⑤ジャンパー⑥角型電池(アルカリ9V)
+	<div id="third"><h2>回路図</h2></div>
+	<div class="kairo"><img src="img/LCDG_kairo.jpg" alt=""></div>
+	配線が多く見えにくいです。
+	<div id="forth"><h2>コード</h2></div>
+	<pre>
+        #include &lt;LiquidCrystal.h&gt;
+        #include &lt;stdio.h&gt;
+        #include &lt;stdlib.h&gt;
+        #include &lt;time.h&gt;
+
+        LiquidCrystal lcd( 4, 6, 10, 11, 12, 13 );
+
+        int a,b;
+        int E_x,E_y,my_x,my_y,cnt_x,lv=0;
+        int cnt;
+        bool flg=false;
+        void setup() {
+            b=0;
+            randomSeed(analogRead(0));
+            //初期化
+            Serial.begin(9600);
+            lcd.begin( 16, 2 );
+            lcd.clear();
+            lcd.setCursor(0, 1);
+            lcd.print(".");
+            cnt_x=15;
+            cnt=0;
+            E_x=14;
+            E_y=0;
+            my_x=0;
+            my_y=1;
+        }
+
+        void loop() {
+            while(flg==false){
+                Serial.println(b);
+                a=digitalRead(8);
+                if(a==0){
+                    my_y=0;
+                }else{
+                    my_y=1;
+                }
+
+                lcd.begin( 16, 2 );
+                lcd.clear();
+                lcd.setCursor(cnt_x, 0);
+                lcd.print(cnt);
+                lcd.setCursor(E_x, E_y);
+                lcd.print(".");
+                lcd.setCursor(my_x, my_y);
+                lcd.print("h");
+                if(E_x==my_x && E_y==my_y){
+                    lcd.begin( 16, 2 );
+                    lcd.clear();
+                    lcd.setCursor(0, 0);
+                    lcd.print("Game Over");
+                    lcd.setCursor(cnt_x, 0);
+                    lcd.print(cnt);
+                    delay(200);
+                    flg=true;
+                    break;
+                }
+                E_x--;
+                if(E_x==-1){
+                    E_x=14;
+                    // 乱数生成器の初期化
+                    // 0または1をランダムに生成し、変数E_yに代入
+                    E_y = random(2);
+                    Serial.println(E_y);
+
+                    cnt++;
+                    if(cnt!=0 && cnt%5==0){
+                        lv++;
+                    }
+                    E_x=E_x-lv;
+
+                    if(cnt>99){
+                        cnt_x=13;
+                    }else if(cnt>9){
+                        cnt_x=14;
+                    }else{
+                        cnt_x=15;
+                    }
+                }
+                delay(200);
+            }
+            b=digitalRead(7);
+            if(b==1){
+                cnt_x=15;
+                cnt=0;
+                E_x=14;
+                E_y=0;
+                my_x=0;
+                my_y=1;
+                flg=false;
+            }
+
+        }
+    </pre>	
+	<div id="fifth"><h2>動作確認</h2></div>
+	<div class="video">
+		<video width="640" height="360" controls>
+			<source src="img/IMG_8249.mp4" type="video/mp4">
+		</video>
+	</div>
+	"."を避けるゲームです。当たってしまうと"GAME OVER"になります。<br>
+	正常に動作させることができました。
+	<div id="six"><h2>まとめ</h2></div>
+	今回はスクロールゲームを作成しました。<br>
+	レベルが上がると球の間隔が短くなったり、カウントをつけたりしてコードにこだわって作りました。<br>
+	ゲームとして遊べるものは今回がはじめてだったので息抜きに遊んでいきます<br>
+	ホワイトボードに図を書いてから作り始めたのでスムーズに作れました。<br>
+	みなさんもぜひ作ってみてください。
+
+	<p><a href="sakuhin.html">戻る</a></p>
+</body>
+</html>

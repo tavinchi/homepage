@@ -182,7 +182,9 @@ body {
 .sakuim {
 	display: flex;
 	justify-content: center; /* 水平方向に中央配置 */
-	height: 100vh; /* ビューポートの高さいっぱいに設定 */
+	flex-wrap: wrap;
+	padding: 10px;
+	box-sizing: border-box;
 }
 .sakuim img {
 	width: 200px; /* 幅を50pxに設定 */
@@ -192,7 +194,10 @@ body {
 .foodim {
 	display: flex;
 	justify-content: center; /* 水平方向に中央配置 */
-	height: 100vh; /* ビューポートの高さいっぱいに設定 */
+	flex-wrap: wrap;
+	padding: 10px;
+	box-sizing: border-box;
+
 }
 .foodim img {
 	width: 200px; /* 幅を50pxに設定 */
